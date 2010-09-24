@@ -3,12 +3,12 @@
 #include <utmp.h>
 #include <stdio.h>
 #include <sys/file.h>
-#include <sys/fcntlcom.h>
+#include <sys/fcntl.h>
 
 void usage(name)
 char *name;
 {
-    printf("Usage: %s [ user | tty ]\n", name);
+    printf("Usage: %s [ user | tty ] wtmp_filename\n", name);
     exit(1);
 }
 
@@ -19,8 +19,9 @@ char *argv[];
     struct utmp utmp;
     int size, fd, lastone = 0;
     int match, tty = 0, x = 0;
+    char *wtmp_filename;
 
-    if (argc>3 || argc<2)
+    if (argc>4 || argc<3)
        usage(argv[0]);
 
     if (strlen(argv[1])<2) {
@@ -28,14 +29,20 @@ char *argv[];
        exit(1);
     }
 
-    if (argc==3)
+    if (argc==4)
        if (argv[2][0] == 'l') lastone = 1;
 
     if (!strncmp(argv[1],"tty",3))
        tty++;
 
-    if ((fd = open("/usr/adm/wtmp",O_RDWR))==-1) {
-        printf("Error: Open on /usr/adm/wtmp\n");
+    if (argc==4)
+       wtmp_filename=argv[3];
+
+    if (argc==3)
+       wtmp_filename=argv[2];
+
+    if ((fd = open(wtmp_filename, O_RDWR))==-1) {
+        printf("Error: Open on %s\n", wtmp_filename);
         exit(1);
     }
 
