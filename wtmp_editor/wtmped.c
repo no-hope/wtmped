@@ -77,7 +77,7 @@ void main (int argc, char *argv[])
     exit(1);
   }
 
-  /* non-argument value shouldb be one */
+  /* non-argument value should be one */
   if (!(argc - optind) == 1)
     usage(argv[0]);
 
